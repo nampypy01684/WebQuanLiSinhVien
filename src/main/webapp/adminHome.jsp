@@ -430,6 +430,7 @@ footer {
 								<th>Họ và tên</th>
 								<th>Tên môn học</th>
 								<th>Điểm</th>
+								<th>Số tín chỉ</th> 
 							</tr>
 						</thead>
 						<tbody>
@@ -448,6 +449,7 @@ footer {
 								<th><%=rs.getString(2)%></th>
 								<th><%=rs.getString(3)%></th>
 								<th><%=rs.getString(4)%></th>
+								<th><%=rs.getString(5)%></th>
 								<!-- Nút Sửa -->
              <!-- Nút Sửa -->
                             <td><a href="editResult.jsp?mssv=<%=rs.getString(1)%>&subject=<%=rs.getString(3)%>">Sửa</a></td>
@@ -525,32 +527,37 @@ function closePopup4() {
 </script>
 	<script>
     // Function to dynamically add a new subject and grade input fields
-    function addSubject() {
-        var subjectList = document.getElementById('subject-list');
-        var newSubjectDiv = document.createElement('div');
-        newSubjectDiv.classList.add('form-group', 'row');
-        newSubjectDiv.innerHTML = `
-            <label class="col-md-4 col-form-label text-md-right">Tên môn học</label>
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="subject_name[]" placeholder="Tên môn học">
-            </div>
-            <div class="col-md-2">
-                <input type="text" class="form-control" name="subject_grade[]" placeholder="Điểm">
-            </div>
-        `;
-        subjectList.appendChild(newSubjectDiv);
+   // Function to dynamically add a new subject and grade input fields
+function addSubject() {
+    var subjectList = document.getElementById('subject-list');
+    var newSubjectDiv = document.createElement('div');
+    newSubjectDiv.classList.add('form-group', 'row');
+    newSubjectDiv.innerHTML = `
+        <label class="col-md-3 col-form-label text-md-right">Tên môn học</label>
+        <div class="col-md-3">
+            <input type="text" class="form-control" name="subject_name[]" placeholder="Tên môn học">
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" name="subject_grade[]" placeholder="Điểm">
+        </div>
+        <div class="col-md-2">
+            <input type="number" class="form-control" name="subject_credit[]" placeholder="Số tín chỉ">
+        </div>
+    `;
+    subjectList.appendChild(newSubjectDiv);
 
-        // Update the result table with new subject and grade (you need to implement this part)
-        updateResultTable(); // Call a function to update the result table
-    }
+    // Update the result table with new subject, grade, and credit
+    updateResultTable();
+}
 
-    // Function to update the result table (you need to implement this part)
-    function updateResultTable() {
+// Function to update the result table
+function updateResultTable() {
     var resultTable = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
     var subjectNameInputs = document.querySelectorAll('input[name="subject_name[]"]');
     var subjectGradeInputs = document.querySelectorAll('input[name="subject_grade[]"]');
+    var subjectCreditInputs = document.querySelectorAll('input[name="subject_credit[]"]');
     var mssvInput = document.querySelector('input[name="mssv"]'); // Lấy mssv từ form
-    var hovatenInput = document.querySelector('input[name="hovaten"]'); // Lấy hovaten từ form
+    var hovatenInput = document.querySelector('input[name="hovaten"]'); // Lấy họ và tên từ form
 
     // Get the existing data in the result table
     var existingRows = resultTable.querySelectorAll('tr');
@@ -561,21 +568,24 @@ function closePopup4() {
             mssv: cells[0].textContent,
             hovaten: cells[1].textContent,
             tenmonhoc: cells[2].textContent,
-            diem: cells[3].textContent
+            diem: cells[3].textContent,
+            tinchi: cells[4].textContent
         });
     });
 
     // Clear the existing table rows
     resultTable.innerHTML = '';
 
-    // Add new subject and grade to the result table
+    // Add new subject, grade, and credit to the result table
     subjectNameInputs.forEach((nameInput, index) => {
         var gradeInput = subjectGradeInputs[index];
+        var creditInput = subjectCreditInputs[index];
         var newRow = resultTable.insertRow();
         newRow.insertCell().textContent = mssvInput.value;
-        newRow.insertCell().textContent = hovatenInput.value; // Thêm dòng này
+        newRow.insertCell().textContent = hovatenInput.value;
         newRow.insertCell().textContent = nameInput.value;
         newRow.insertCell().textContent = gradeInput.value;
+        newRow.insertCell().textContent = creditInput.value;
     });
 
     // Add back existing data
@@ -585,8 +595,10 @@ function closePopup4() {
         newRow.insertCell().textContent = data.hovaten;
         newRow.insertCell().textContent = data.tenmonhoc;
         newRow.insertCell().textContent = data.diem;
+        newRow.insertCell().textContent = data.tinchi;
     });
 }
+
 </script>
 </body>
 </html>

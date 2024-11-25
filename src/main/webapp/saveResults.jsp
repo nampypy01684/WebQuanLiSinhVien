@@ -6,12 +6,13 @@
     String hovaten = request.getParameter("hovaten");
     String[] subjectNames = request.getParameterValues("subject_name[]");
     String[] subjectGrades = request.getParameterValues("subject_grade[]");
+    String[] subjectCredits = request.getParameterValues("subject_credit[]");
 
-    if (mssv == null || hovaten == null || subjectNames == null || subjectGrades == null) {
+    if (mssv == null || hovaten == null || subjectNames == null || subjectGrades == null || subjectCredits == null) {
         out.println("Thông tin không đầy đủ. Vui lòng kiểm tra lại.");
     } else {
         try (Connection conn = ConnectionProvider.getCon();
-             PreparedStatement stmt = conn.prepareStatement("INSERT INTO ketqua (mssv, hovaten, subject_name, grade) VALUES (?, ?, ?, ?)")) {
+             PreparedStatement stmt = conn.prepareStatement("INSERT INTO ketqua (mssv, hovaten, subject_name, grade, credit) VALUES (?, ?, ?, ?, ?)")) {
 
             // Duyệt qua từng môn học và lưu vào database
             for (int i = 0; i < subjectNames.length; i++) {
@@ -19,6 +20,7 @@
                 stmt.setString(2, hovaten);
                 stmt.setString(3, subjectNames[i]);
                 stmt.setString(4, subjectGrades[i]);
+                stmt.setInt(5, Integer.parseInt(subjectCredits[i])); // Lấy tín chỉ và chuyển thành số nguyên
                 stmt.addBatch(); // Thêm vào batch để tối ưu hóa
             }
 
